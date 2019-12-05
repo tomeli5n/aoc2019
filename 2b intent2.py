@@ -1,3 +1,7 @@
+"""
+int code machine
+"""
+
 with open("2input.txt", 'r') as f:
 	raw = [int(line.rstrip('\n')) for line in f]
 
