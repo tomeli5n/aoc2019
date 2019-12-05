@@ -14,7 +14,7 @@ Your puzzle input is 136818-685979.
 
 answers = []
 
-for password in range(136818, 685979):
+for password in range(136818,685979):
 
 	candidate = False
 
@@ -30,13 +30,23 @@ for password in range(136818, 685979):
 
 		# rule 1: adyacent
 		try:
-			third = digits[dig+2]
+			proximo = digits[dig+2]
+			#print("third OK")
 		except:
-			third = digits[dig+1] #nothird
+			#print("no hay third")
+			proximo = digits[dig-1] 
+		try:
+			previo = digits[dig-1]
+			#print("third OK")
+		except:
+			#print("no hay third")
+			previo = digits[dig]+1
 
-		if( digits[dig] == digits[dig+1] == third): 
-			#print(digits[dig],"adyacent found")
+		if( digits[dig] == digits[dig+1] and (digits[dig] != proximo) and (digits[dig] != previo)): 
+
+			#print(digits[dig],"adyacent found",digits[dig],digits[dig+1],proximo)
 			adyacent = True or adyacent # at least one True
+
 
 		#rule 2: never decrease
 		if(digits[dig] <= digits[dig+1]):
@@ -58,6 +68,8 @@ print(answers)
 print("total passwords",len(answers))
 
 # 1417: answer too hig
+
+# 1291 con el analisis de previo y proximo al grupo.
 
 
 
