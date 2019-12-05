@@ -58,7 +58,8 @@ for password in range(136818, 685979):
 print(answers)
 print("total passwords",len(answers))
 
-# 9050: answer too hig
+# 9050: answer too hig (error en logica de creciente, no tomaba el final - range(0,4))
+# 1919: OK
 
 
 
