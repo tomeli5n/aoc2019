@@ -1,3 +1,4 @@
+
 """
 trazar los caminos a traves de listas con tuples inside (coordenadas)
 
@@ -10,9 +11,12 @@ Pasos
 
 """
 
-import matplotlib
-matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
+import time
+start_time = time.time()
+
+#import matplotlib
+#matplotlib.use('TkAgg')
+#import matplotlib.pyplot as plt
 
 
 
@@ -47,26 +51,26 @@ with open("3inputb.txt", 'r') as f:
 cable2 = []
 cable2 = get_coords(raw2)
 
-#print(cable1)
-	#print(coord[1:])
-xgraph=[]
-ygraph=[]
-for point in cable1:
-	xpoint, ypoint = point
-	xgraph.append(xpoint)
-	ygraph.append(ypoint)
+#grafico
+# xgraph=[]
+# ygraph=[]
+# for point in cable1:
+# 	xpoint, ypoint = point
+# 	xgraph.append(xpoint)
+# 	ygraph.append(ypoint)
 
-plt.plot(xgraph, ygraph, label="line1")
-xgraph=[]
-ygraph=[]
-for point in cable2:
-	xpoint, ypoint = point
-	xgraph.append(xpoint)
-	ygraph.append(ypoint)
-plt.plot(xgraph, ygraph, label="line2")
+# plt.plot(xgraph, ygraph, label="line1")
+# xgraph=[]
+# ygraph=[]
+# for point in cable2:
+# 	xpoint, ypoint = point
+# 	xgraph.append(xpoint)
+# 	ygraph.append(ypoint)
+# plt.plot(xgraph, ygraph, label="line2")
 
 #buscar cruces
 steps1 = steps2 = 0
+steps_global = []
 
 for a in range(0, len(cable1)-1):
 	x1,y1 = cable1[a]
@@ -88,22 +92,25 @@ for a in range(0, len(cable1)-1):
 			parcial1 = steps1 - abs(x2-x1) + abs(x1-x3) #resta actual y suma parcial
 			parcial2 = steps2 - abs(y4-y3) + abs(y1-y3)
 			steps_total = parcial1+parcial2
-			print("bingo 1:",x3,y1,"distance:",abs(x3)+abs(y1), "steps_total",steps_total,parcial1,parcial2)
+			steps_global.append(steps_total)
+			#print("bingo 1:",x3,y1,"distance:",abs(x3)+abs(y1), "steps_total",steps_total,parcial1,parcial2)
 		
 		# c2 horizonal
 		if(x1-x2==0 and y3-y4 == 0 and (min(x3,x4) < x1 < max(x3,x4)) and (min(y1,y2) < y3 < max(y1,y2))):
 			parcial1 = steps1 - abs(y1-y2) + abs(y1-y3) #resta actual y suma parcial
 			parcial2 = steps2 - abs(x4-x3) + abs(x1-x3)
 			steps_total = parcial1+parcial2
-			print("bingo 2:",x1,y3, "distance:",abs(x1)+abs(y3), "steps_total",steps_total,parcial1,parcial2)
+			steps_global.append(steps_total)
+			#print("bingo 2:",x1,y3, "distance:",abs(x1)+abs(y3), "steps_total",steps_total,parcial1,parcial2)
 	
 	#end for, reset cable
 	steps2 = 0
-
+print("--- %s seconds ---" % (time.time() - start_time))
+print(min(steps_global))
 
 
 
 
 #print(cable1)
-plt.plot(xgraph, ygraph)
-plt.show()
+#plt.plot(xgraph, ygraph)
+#plt.show()
