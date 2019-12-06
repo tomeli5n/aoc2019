@@ -25,7 +25,7 @@ while(pos > len(intcodes) or instruction != 99):
 		intcodes[param1] = initial
 
 		pos +=1
-		print("input at",pos,intcodes[param1] )
+		#print("input at",pos,intcodes[param1] )
 
 	elif( instruction == 4): #outupt
 		param1 = intcodes[pos+1]
@@ -34,7 +34,7 @@ while(pos > len(intcodes) or instruction != 99):
 		print("OUTPUT",value1)
 
 		pos +=1
-		print("outupt at",pos)
+		#print("outupt at",pos)
 
 	elif( instruction % 10 == 1): #1 suma
 		mode1 = int(str(instruction).zfill(4)[-3:-2])
@@ -56,18 +56,18 @@ while(pos > len(intcodes) or instruction != 99):
 		intcodes[param3] = value1 + value2
 
 
-		print("encontrada suma at",pos)
-		print("instruction",instruction)
-		print("mode1",mode1)
-		print("value1",value1)
-		print("mode2",mode2)
-		print("value2",value2)
+		# print("encontrada suma at",pos)
+		# print("instruction",instruction)
+		# print("mode1",mode1)
+		# print("value1",value1)
+		# print("mode2",mode2)
+		# print("value2",value2)
 
 
 		pos+=4
 
 	elif(  instruction % 10 == 2): #2 mult
-		print("mult at pos",pos)
+		#print("mult at pos",pos)
 
 		mode1 = int(str(instruction).zfill(4)[-3:-2])
 		param1 = intcodes[pos+1]
