@@ -190,3 +190,5 @@ while(pos > len(intcodes) or instruction != 99 and count < 2000000):
 
 	count +=1
 #first guess: 9654885
+
+#parte B: 7079459
