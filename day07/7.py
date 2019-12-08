@@ -6,7 +6,7 @@ with open("input.txt") as f:
 	for line in f:
 		_ = line.split(',') 
 
-	intcodes = [int(item) for item in _]
+	input_data = [int(item) for item in _]
 
 
 
@@ -17,6 +17,8 @@ def machine(phase,input_signal=0):
 	pos = 0
 	instruction = 0
 	count =0
+
+	intcodes = input_data.copy()
 	while(pos > len(intcodes) or instruction != 99 and count < 2000000):
 
 		instruction = intcodes[pos]
@@ -226,15 +228,23 @@ for a in range(0,5):
 		for c in range (0,5):
 			for d in range (0,5):
 				for e in range (0,5):
-					if a+b+c+d+e == 4+3+2+1 :
+					combi = str(a)+str(b)+str(c)+str(d)+str(e)
+
+					if ''.join(sorted(combi)) == '01234' :
 						candidates.append(str(a)+str(b)+str(c)+str(d)+str(e))
 
 #print(candidates)
 print(len(candidates))
 
 solutions = { x : init_secuence(x) for x in candidates}
-print(solutions)
+#print(solutions)
 
-print(max(solutions, key=solutions.get))
+print("max",max(solutions, key=solutions.get))
+
+
+print(init_secuence('03124'))
 
 #31114 too low.
+
+#despues de aplicar el filtro y sort:
+#03124  too low. asegurado que son 120 phase statuse
