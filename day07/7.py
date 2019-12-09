@@ -10,43 +10,62 @@ with open("input.txt") as f:
 
 
 
+machine_status ={} #machine ID: [[intcodes], position, status]
+intcodes= []
+def machine(phase, input_signal=0, instance=0):
+	output_value=None
+	print("MACHINE",instance,"INPUT",input_signal,"PHASE:",phase)
 
+	#retrieve status. Else save
+	if instance in machine_status:
+		#print("running")
+		intcodes = machine_status[instance][0]
 
-def machine(phase,input_signal=0):
-	print("INPUT", phase, input_signal)
-	pos = 0
-	instruction = 0
-	count =0
+	else:
+		machine_status[instance] = [input_data.copy(), 0, False]
+	
+	intcodes = machine_status[instance][0]
+	pos = machine_status[instance][1]
 
-	intcodes = input_data.copy()
-	while(pos > len(intcodes) or instruction != 99 and count < 2000000):
+	#print("\t INPUT", phase, input_signal)
 
+	halt = None
+
+	while True:
+		#if halt: break
 		instruction = intcodes[pos]
+		status = machine_status[instance][2]
 		param1=0
 		param2=0
 		value1=0
 		value2=0
 
-		#print(count,pos,instruction)
+		#print("\tINST",instruction)
+		
+		# INPUT
 		if( instruction == 3): #input, guardar
 			param1 = intcodes[pos+1]
+
+			#Variables de arranque
+			if status:
+				value1 = input_signal
+			else: #not running
+				value1 = phase
+				machine_status[instance][2] = True 
 			
+			intcodes[param1] = value1
 
-			intcodes[param1] = phase
-			phase = input_signal
-
-			print("\tinput at", pos, intcodes[param1] )
+			#print("\t\tinput ", value1)
 
 			pos +=2
 
 		elif( instruction % 10 == 4): #outupt
 			param1 = intcodes[pos+1]
 			value1 = intcodes[param1]
-			
-			print("OUTPUT",value1)
-			return value1
-
+			output_value=value1
+			print("\t""OUTPUT",output_value)
 			pos +=2
+			break
 
 		elif( instruction % 10 == 1): #1 suma
 			#print("\tSum")	
@@ -66,9 +85,9 @@ def machine(phase,input_signal=0):
 			else: 
 				value2 = param2
 			
+			#print("\t",instruction,param1,param2,param3,value1,value2)
 			intcodes[param3] = value1 + value2
 			
-			#print("\t",instruction,param1,param2,param3,value1,value2)	
 			pos+=4
 
 		elif( instruction % 10 == 5): #jump-if-true
@@ -142,7 +161,6 @@ def machine(phase,input_signal=0):
 				intcodes[param3] = 0
 
 			pos += 4
-
 		elif( instruction % 10 == 8): #equals
 			#print("\tEquals")
 			mode1 = int(str(instruction).zfill(4)[-3:-2])
@@ -197,30 +215,42 @@ def machine(phase,input_signal=0):
 
 		elif(instruction == 99):	#halt
 			#print("halt at pos",pos)
+			if not output_value: output_value = input_signal
+			halt = True
 			break
 
-		count +=1
+	machine_status[instance][0] = intcodes
+	machine_status[instance][1] = pos
+	machine_status[instance][2] = True 
+	
+	if halt: 
+		print("Removing machine",instance)
+		machine_status.pop(instance)
 
+	#print(machine_status)
+	return output_value
+
+
+#### PART A
 
 def init_secuence(phase_setting):
 	#amp A
-	a = machine(int(phase_setting[0]))
+	a = machine(int(phase_setting[0]),0 ,1)
 
 	#amp B
-	b = machine(int(phase_setting[1]), a)
+	b = machine(int(phase_setting[1]), a, 2)
 
 	#amp C
-	c = machine(int(phase_setting[2]), b)
+	c = machine(int(phase_setting[2]), b, 3)
 
 	#amp D
-	d = machine(int(phase_setting[3]), c)
+	d = machine(int(phase_setting[3]), c, 4)
 
 	#amp B
-	e = machine(int(phase_setting[4]), d)
+	e = machine(int(phase_setting[4]), d, 5)
 
-	#print("to thrusters",e)
+	print("CODE",phase_setting,"to thrusters",e)
 	return e
-#init_secuence('01234')
 
 candidates = []
 for a in range(0,5):
@@ -228,23 +258,70 @@ for a in range(0,5):
 		for c in range (0,5):
 			for d in range (0,5):
 				for e in range (0,5):
-					combi = str(a)+str(b)+str(c)+str(d)+str(e)
 
+					combi = str(a)+str(b)+str(c)+str(d)+str(e)
 					if ''.join(sorted(combi)) == '01234' :
 						candidates.append(str(a)+str(b)+str(c)+str(d)+str(e))
 
-#print(candidates)
 print(len(candidates))
 
 solutions = { x : init_secuence(x) for x in candidates}
-#print(solutions)
 
-print("max",max(solutions, key=solutions.get))
+print("PART a max",solutions.get(max(solutions, key=solutions.get)))
 
-
-print(init_secuence('03124'))
-
+#print(init_secuence('03124'))
 #31114 too low.
-
 #despues de aplicar el filtro y sort:
 #03124  too low. asegurado que son 120 phase statuse
+# resultado: 39867
+
+
+###  PART B
+
+candidates = []
+for a in range(5,10):
+	for b in range (5,10):
+		for c in range (5,10):
+			for d in range (5,10):
+				for e in range (5,10):
+
+					combi = str(a)+str(b)+str(c)+str(d)+str(e)
+					if ''.join(sorted(combi)) == '56789' :
+						candidates.append(str(a)+str(b)+str(c)+str(d)+str(e))
+
+#print(candidates)
+
+
+def init_secuence_b(phase_setting):
+
+	e=0
+	count=True
+	while (count or machine_status):
+
+		#amp A
+		a = machine(int(phase_setting[0]), e, 1)
+
+		#amp B
+		b = machine(int(phase_setting[1]), a, 2)
+
+		#amp C
+		c = machine(int(phase_setting[2]), b, 3)
+
+		#amp D
+		d = machine(int(phase_setting[3]), c, 4)
+
+		#amp B
+		e = machine(int(phase_setting[4]), d, 5)
+
+		count = False
+
+	print("to thrusters",e)
+	return e
+
+#init_secuence_b('97856')
+
+
+solutions_b = { x : init_secuence_b(x) for x in candidates}
+
+
+print("PART B max",solutions_b.get(max(solutions_b, key=solutions_b.get)))
